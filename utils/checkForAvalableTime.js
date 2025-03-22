@@ -152,10 +152,10 @@
 // };
 
 const axios = require("axios");
-const { getUpcomingMeetinggg } = require("./getUpcomingMeeting");
+const { getUpcomingMeetinggg, getUpcomingMeeting } = require("./getUpcomingMeeting");
 const { refreshAccessToken } = require("./refreshToken");
 
-exports.CheckIfSlotAvailable = async (topic, isoDateTime, duration, users) => {
+exports.CheckIfSlotAvailable = async (topic, isoDateTime, duration,allow_multiple_devices,audio,waiting_room, recurr_end_date_time,recurr_end_times,recurr_monthly_day,recurr_monthly_week,recurr_monthly_week_day,recurr_repeat_interval,recurr_weekly_days, users) => {
   try {
     console.log("INSIDE CHECKIF SLOT AVAILABLE", isoDateTime);
 
@@ -168,7 +168,7 @@ exports.CheckIfSlotAvailable = async (topic, isoDateTime, duration, users) => {
     // Loop through all linked Zoom accounts
     for (const user of users) {
       const type = "upcoming";
-      const userUpcomingMeetings = await getUpcomingMeetinggg(
+      const userUpcomingMeetings = await getUpcomingMeeting(
         user.email,
         type,
         user
@@ -214,6 +214,19 @@ exports.CheckIfSlotAvailable = async (topic, isoDateTime, duration, users) => {
         duration: duration || 30,
         timezone: "Asia/Kolkata",
         password: "123456",
+        allow_multiple_devices: allow_multiple_devices,
+        audio: "both",
+        waiting_room: waiting_room,
+        host_video: true,
+        recurrence: {
+          end_date_time: recurr_end_date_time,
+          end_times: recurr_end_times,
+          monthly_day: recurr_monthly_day,
+          monthly_week: recurr_monthly_week,
+          monthly_week_day: recurr_monthly_week_day,
+          repeat_interval: recurr_repeat_interval,
+          type: 1,
+          weekly_days: recurr_weekly_days,
         settings: {
           approval_type: 0,
           registration_type: 2,
@@ -222,6 +235,7 @@ exports.CheckIfSlotAvailable = async (topic, isoDateTime, duration, users) => {
           registration_questions: [{ field_name: "phone", required: true }],
         },
       },
+    },
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,

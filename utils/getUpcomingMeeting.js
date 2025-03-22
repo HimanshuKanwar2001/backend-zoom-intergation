@@ -5,7 +5,7 @@ const { refreshAccessToken } = require("./refreshToken.js");
 const User = require("../models/User.js");
 
 // Function to fetch upcoming meetings
- exports.getUpcomingMeetinggg = async (email, type = "upcoming", user) => {
+ exports.getUpcomingMeeting= async (email, type = "upcoming", user) => {
   try {
     console.log("📌 Inside getUpcomingMeetings FUNCTION");
 
