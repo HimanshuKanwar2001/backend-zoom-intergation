@@ -31,6 +31,7 @@ const configureZoomStrategy = (clientID, clientSecret, selectedAccount) => {
 
           // Simulate user retrieval or creation in DB
           let user = await User.findOne({ zoomId: profile.id });
+          console.log("USER IN PASSPORT JS ", user);
           if (!user) {
             user = await User.create({
               zoomId: profile.id,

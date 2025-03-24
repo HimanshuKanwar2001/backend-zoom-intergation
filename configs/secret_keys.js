@@ -25,7 +25,18 @@ const keys = {
   VISHWAJEET: {
     clientID: process.env.VISHWAJEET_ZOOM_CLIENT_ID,
     clientSecret: process.env.VISHWAJEET_ZOOM_CLIENT_SECRET,
-    clientRedirectionLink: process.env.VISHWAJEET_ZOOM_CLIENT_REDIRECT,
+  },
+  PRATIMA: {
+    clientID: process.env.PRATIMA_ZOOM_CLIENT_ID,
+    clientSecret: process.env.PRATIMA_ZOOM_CLIENT_SECRET,
+  },
+  ANISH: {
+    clientID: process.env.ANISH_ZOOM_CLIENT_ID,
+    clientSecret: process.env.ANISH_ZOOM_CLIENT_SECRET,
+  },
+  PUSHKAR: {
+    clientID: process.env.PUSHKAR_ZOOM_CLIENT_ID,
+    clientSecret: process.env.PUSHKAR_ZOOM_CLIENT_SECRET,
   },
 };
 

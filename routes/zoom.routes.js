@@ -9,4 +9,5 @@ const passport = require("../configs/passport-config.js");
 // route.get("/auth/zoom", passport.authenticate("zoom"));
 route.post("/create/meeting", zoomController.createMeeting);
 route.get("/upcoming/meeting", zoomController.getUpcomingMeetings);
+route.post("/search", zoomController.searchMeetings);
 module.exports = route;

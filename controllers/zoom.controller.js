@@ -6,10 +6,25 @@ const keys = require("../configs/secret_keys.js");
 const { refreshZoomToken } = require("./authController.js");
 const { CheckIfSlotAvailable } = require("../utils/checkForAvalableTime.js");
 const moment = require("moment-timezone");
+const { refreshAccessToken } = require("../utils/refreshToken.js");
 
 exports.createMeeting = async (req, res) => {
   try {
-    const { topic, start_time, duration,allow_multiple_devices,audio,waiting_room, recurr_end_date_time,recurr_end_times,recurr_monthly_day,recurr_monthly_week,recurr_monthly_week_day,recurr_repeat_interval,recurr_weekly_days} = req.body;
+    const {
+      topic,
+      start_time,
+      duration,
+      allow_multiple_devices,
+      audio,
+      waiting_room,
+      recurr_end_date_time,
+      recurr_end_times,
+      recurr_monthly_day,
+      recurr_monthly_week,
+      recurr_monthly_week_day,
+      recurr_repeat_interval,
+      recurr_weekly_days,
+    } = req.body;
 
     const utcDate = new Date(start_time);
 
@@ -28,13 +43,20 @@ exports.createMeeting = async (req, res) => {
       topic,
       isoDateTime,
       duration,
-      allow_multiple_devices,audio,waiting_room, recurr_end_date_time,recurr_end_times,recurr_monthly_day,recurr_monthly_week,recurr_monthly_week_day,recurr_repeat_interval,recurr_weekly_days,
+      allow_multiple_devices,
+      audio,
+      waiting_room,
+      recurr_end_date_time,
+      recurr_end_times,
+      recurr_monthly_day,
+      recurr_monthly_week,
+      recurr_monthly_week_day,
+      recurr_repeat_interval,
+      recurr_weekly_days,
       user
     );
-
-    res.json({
-      isMeetCreated,
-    });
+    console.log("isMeetCreated", isMeetCreated);
+    res.json(isMeetCreated);
   } catch (error) {
     console.error(
       "Error creating meeting:",
@@ -70,37 +92,61 @@ exports.getUpcomingMeetings = async (req, res) => {
   }
 };
 
-// exports.getRefreshTokenAndAccessToken = (req, res) => {
-//   try {
-//     const account = req.params.account
-//       ? req.params.account.toUpperCase()
-//       : null;
-//     if (!account)
-//       return res.status(400).json({ message: "Account parameter missing" });
+// Function to search meetings across multiple accounts
+exports.searchMeetings = async (req, res) => {
+  try {
+    const { searchQuery } = req.body;
+    if (!searchQuery) {
+      return res.status(400).json({ message: "Search query is required" });
+    }
 
-//     const selectedAccount = keys[account];
-//     console.log("selectedAccount", selectedAccount);
-//     if (!selectedAccount) {
-//       return res
-//         .status(400)
-//         .json({ message: "Invalid Zoom account selection" });
-//     }
+    // Fetch all stored Zoom accounts
+    const accounts = await User.find();
+    if (!accounts.length) {
+      return res.status(404).json({ message: "No Zoom accounts found" });
+    }
 
-//     // Store selected account credentials in session
-//     req.session.zoomClient = {
-//       clientID: selectedAccount.clientID,
-//       clientSecret: selectedAccount.clientSecret,
-//     };
-//     const redirectUri = encodeURIComponent(
-//       "http://localhost:5000/auth/zoom/callback"
-//     );
-//     res.redirect(
-//       `https://zoom.us/oauth/authorize?client_id=${selectedAccount.clientID}&response_type=code&redirect_uri=${redirectUri}`
-//     );
+    let results = [];
 
-//     // res.json({ message: "Zoom account selected successfully!" });
-//   } catch (error) {
-//     console.log("Error:", error);
-//     res.status(500).json({ message: "Error selecting Zoom account", error });
-//   }
-// };
+    // Iterate through each account and fetch meetings
+    for (const account of accounts) {
+      const accessToken = await refreshAccessToken(account._id);
+      if (!accessToken) {
+        console.warn(
+          `⚠️ Skipping account ${account.email}, reauthorization needed.`
+        );
+        continue;
+      }
+
+      const response = await axios.get(
+        "https://api.zoom.us/v2/users/me/meetings",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+          params: { type: "upcoming" },
+        }
+      );
+
+      const filteredMeetings = response.data.meetings.filter((meeting) =>
+        meeting.topic.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+
+      // Add account info to results
+      filteredMeetings.forEach((meeting) => {
+        results.push({
+          meetingId: meeting.id,
+          topic: meeting.topic,
+          startTime: meeting.start_time,
+          accountEmail: account.email,
+        });
+      });
+    }
+
+    res.json({ results });
+  } catch (error) {
+    console.error(
+      "❌ Error searching meetings:",
+      error.response?.data || error.message
+    );
+    res.status(500).json({ message: "Failed to search meetings" });
+  }
+};
