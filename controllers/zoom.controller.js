@@ -3,7 +3,7 @@ const User = require("../models/User.js");
 
 const { getUpcomingMeeting } = require("../utils/getUpcomingMeeting.js");
 const keys = require("../configs/secret_keys.js");
-const { refreshZoomToken } = require("./authController.js");
+const { refreshZoomToken, selectZoomAccount } = require("./authController.js");
 const { CheckIfSlotAvailable } = require("../utils/checkForAvalableTime.js");
 const moment = require("moment-timezone");
 const { refreshAccessToken } = require("../utils/refreshToken.js");
@@ -56,7 +56,18 @@ exports.createMeeting = async (req, res) => {
       user
     );
     console.log("isMeetCreated", isMeetCreated);
-    res.json(isMeetCreated);
+    console.log(
+      "isMeetCreated.selectZoomAccount------>",
+      isMeetCreated.selectedAccount.toUpperCase()
+    );
+
+    const hostKey = keys[isMeetCreated.selectedAccount.toUpperCase()];
+    console.log("HOST KEY--------------->", hostKey.hostKey);
+    res.json({
+      data: isMeetCreated.data,
+      hostKey: hostKey.hostKey,
+      name: isMeetCreated.name,
+    });
   } catch (error) {
     console.error(
       "Error creating meeting:",
@@ -84,7 +95,7 @@ exports.getUpcomingMeetings = async (req, res) => {
       meetingsMap.push({ userName: user.name, meetings });
     }
 
-    console.log("📅 Fetched meetings:", meetingsMap);
+    // console.log("📅 Fetched meetings:", meetingsMap);
     res.json(meetingsMap);
   } catch (error) {
     console.error("❌ Error fetching meetings:", error.message);

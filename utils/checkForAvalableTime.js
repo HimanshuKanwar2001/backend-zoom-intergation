@@ -1,10 +1,26 @@
-
-
 const axios = require("axios");
-const { getUpcomingMeetinggg, getUpcomingMeeting } = require("./getUpcomingMeeting");
+const {
+  getUpcomingMeetinggg,
+  getUpcomingMeeting,
+} = require("./getUpcomingMeeting");
 const { refreshAccessToken } = require("./refreshToken");
 
-exports.CheckIfSlotAvailable = async (topic, isoDateTime, duration,allow_multiple_devices,audio,waiting_room, recurr_end_date_time,recurr_end_times,recurr_monthly_day,recurr_monthly_week,recurr_monthly_week_day,recurr_repeat_interval,recurr_weekly_days, users) => {
+exports.CheckIfSlotAvailable = async (
+  topic,
+  isoDateTime,
+  duration,
+  allow_multiple_devices,
+  audio,
+  waiting_room,
+  recurr_end_date_time,
+  recurr_end_times,
+  recurr_monthly_day,
+  recurr_monthly_week,
+  recurr_monthly_week_day,
+  recurr_repeat_interval,
+  recurr_weekly_days,
+  users
+) => {
   try {
     console.log("INSIDE CHECKIF SLOT AVAILABLE", isoDateTime);
 
@@ -76,15 +92,15 @@ exports.CheckIfSlotAvailable = async (topic, isoDateTime, duration,allow_multipl
           repeat_interval: recurr_repeat_interval,
           type: 1,
           weekly_days: recurr_weekly_days,
-        settings: {
-          approval_type: 0,
-          registration_type: 2,
-          allow_multiple_devices: false,
-          registrant_fields: ["email", "first_name", "last_name", "phone"],
-          registration_questions: [{ field_name: "phone", required: true }],
+          settings: {
+            approval_type: 0,
+            registration_type: 2,
+            allow_multiple_devices: false,
+            registrant_fields: ["email", "first_name", "last_name", "phone"],
+            registration_questions: [{ field_name: "phone", required: true }],
+          },
         },
       },
-    },
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -98,7 +114,7 @@ exports.CheckIfSlotAvailable = async (topic, isoDateTime, duration,allow_multipl
     console.log("Join URL:", meetingResponse.data.join_url);
     console.log("Registration URL:", meetingResponse.data.registration_url);
 
-    return meetingResponse.data;
+    return { data: meetingResponse.data,selectedAccount: availableAccount.selectedName ,name: availableAccount.name };
   } catch (error) {
     console.error(
       "Error creating meeting:",
