@@ -95,6 +95,7 @@ exports.CheckIfSlotAvailable = async (
           settings: {
             approval_type: 0,
             registration_type: 2,
+            join_before_host: true,
             allow_multiple_devices: false,
             registrant_fields: ["email", "first_name", "last_name", "phone"],
             registration_questions: [{ field_name: "phone", required: true }],
@@ -114,7 +115,11 @@ exports.CheckIfSlotAvailable = async (
     console.log("Join URL:", meetingResponse.data.join_url);
     console.log("Registration URL:", meetingResponse.data.registration_url);
 
-    return { data: meetingResponse.data,selectedAccount: availableAccount.selectedName ,name: availableAccount.name };
+    return {
+      data: meetingResponse.data,
+      selectedAccount: availableAccount.selectedName,
+      name: availableAccount.name,
+    };
   } catch (error) {
     console.error(
       "Error creating meeting:",
