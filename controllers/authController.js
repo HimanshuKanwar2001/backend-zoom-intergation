@@ -229,8 +229,13 @@ exports.authZoomCallback = (req, res) => {
   passport.authenticate("zoom", {
     failureRedirect: "/auth/zoom/retry",
   })(req, res, () => {
-    console.log("✅ User authenticated, redirecting...", req.user);
-    res.json({ message: `user got authneticated ${JSON.stringify(req.user)}` });
+    console.log("✅ User authenticated, redirecting...", req.user.name);
+    res.json({
+      message: `user got authneticated ${JSON.stringify(
+        req.user.zoomClientID,
+        req.user.zoomClientSecret
+      )}`,
+    });
     // res.redirect("/");
   });
 };

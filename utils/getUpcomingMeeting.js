@@ -5,7 +5,7 @@ const { refreshAccessToken } = require("./refreshToken.js");
 const User = require("../models/User.js");
 
 // Function to fetch upcoming meetings
- exports.getUpcomingMeeting= async (email, type = "upcoming", user) => {
+exports.getUpcomingMeeting = async (email, type = "upcoming", user) => {
   try {
     console.log("📌 Inside getUpcomingMeetings FUNCTION");
 
@@ -15,6 +15,7 @@ const User = require("../models/User.js");
     }
 
     // Generate a new access token
+    console.log("user._id--->", user._id);
     const accessToken = await refreshAccessToken(user._id);
     console.log("🔑 Using access token:", accessToken.slice(0, 15), "...");
 

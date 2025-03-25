@@ -82,16 +82,19 @@ exports.getUpcomingMeetings = async (req, res) => {
     console.log("📌 Inside getUpcomingMeetings");
 
     // ✅ Extract email & type from query (dynamic usage)
-    const { type = "upcoming" } = req.query;
+    const { type = "upcoming" } = req.body;
 
     // ✅ Validate user
     const users = await User.find();
+    // console.log("Users--->", users);
+
     if (!users.length) return res.status(401).json({ error: "No users found" });
 
     const meetingsMap = [];
 
     for (const user of users) {
       const meetings = await getUpcomingMeeting(user.email, type, user); // ✅ Fixed function name
+      // console.log("Users--->", meetings);
       meetingsMap.push({ userName: user.name, meetings });
     }
 
