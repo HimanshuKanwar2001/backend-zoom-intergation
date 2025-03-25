@@ -93,7 +93,7 @@ exports.CheckIfSlotAvailable = async (
           type: 1,
           weekly_days: recurr_weekly_days,
           settings: {
-            approval_type: 0,
+            approval_type: 1,
             registration_type: 2,
             join_before_host: true,
             allow_multiple_devices: false,
