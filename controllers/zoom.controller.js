@@ -28,8 +28,14 @@ exports.createMeeting = async (req, res) => {
 
     const utcDate = new Date(start_time);
 
+    // Subtract 5 hours and 30 minutes
+    utcDate.setHours(utcDate.getHours() - 5);
+    utcDate.setMinutes(utcDate.getMinutes() - 30);
+
     // Format the date in Zoom's required format (ISO string without milliseconds)
     const isoDateTime = utcDate.toISOString().slice(0, 19) + "Z";
+
+    console.log(isoDateTime); // Output: "2024-03-25T04:30:00Z"
 
     console.log("Corrected ISO DateTime for Zoom:", isoDateTime);
 
