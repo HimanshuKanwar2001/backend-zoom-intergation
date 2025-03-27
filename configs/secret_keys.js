@@ -42,6 +42,11 @@ const keys = {
     clientSecret: process.env.PUSHKAR_ZOOM_CLIENT_SECRET,
     hostKey: process.env.PUSHKAR_HOST_KEY,
   },
+  KUSH: {
+    clientID: process.env.KUSH_ZOOM_CLIENT_ID,
+    clientSecret: process.env.KUSH_ZOOM_CLIENT_SECRET,
+    hostKey: process.env.KUSH_HOST_KEY,
+  },
 };
 
 module.exports = keys; // Correct export for CommonJS

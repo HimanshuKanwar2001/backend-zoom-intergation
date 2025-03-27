@@ -96,6 +96,7 @@ exports.CheckIfSlotAvailable = async (
             approval_type: 1,
             registration_type: 2,
             join_before_host: true,
+            waiting_room: true,
             allow_multiple_devices: false,
             registrant_fields: ["email", "first_name", "last_name", "phone"],
             registration_questions: [{ field_name: "phone", required: true }],
