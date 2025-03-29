@@ -76,7 +76,7 @@ exports.CheckIfSlotAvailable = async (
         topic: topic || "New Meeting",
         type: 2, // Scheduled Meeting
         start_time: isoDateTime,
-        duration: duration || 30,
+        duration: duration,
         timezone: "Asia/Kolkata",
         password: "123456",
         allow_multiple_devices: allow_multiple_devices,

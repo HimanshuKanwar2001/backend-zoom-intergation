@@ -13,7 +13,8 @@ exports.createMeeting = async (req, res) => {
     const {
       topic,
       start_time,
-      duration,
+      durationHour,
+      durationMinute,
       allow_multiple_devices,
       audio,
       waiting_room,
@@ -25,7 +26,8 @@ exports.createMeeting = async (req, res) => {
       recurr_repeat_interval,
       recurr_weekly_days,
     } = req.body;
-
+    const duration = Number(durationHour * 60) + Number(durationMinute);
+    // console.log("DURANTION-------------->", duration);
     const utcDate = new Date(start_time);
 
     // Subtract 5 hours and 30 minutes
