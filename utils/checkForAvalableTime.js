@@ -22,7 +22,7 @@ exports.CheckIfSlotAvailable = async (
   users
 ) => {
   try {
-    console.log("INSIDE CHECKIF SLOT AVAILABLE", isoDateTime);
+    // console.log("INSIDE CHECKIF SLOT AVAILABLE", isoDateTime);
 
     if (!users || users.length === 0) {
       return { error: "Users are not present" };
@@ -39,8 +39,8 @@ exports.CheckIfSlotAvailable = async (
         user
       );
 
-      console.log("Checking user:", user.name);
-      console.log("User's Upcoming Meetings:", userUpcomingMeetings);
+      // console.log("Checking user:", user.name);
+      // console.log("User's Upcoming Meetings:", userUpcomingMeetings);
 
       // Check if the requested time slot is already booked
       const isSlotTaken = await userUpcomingMeetings?.some((meeting) => {
@@ -112,9 +112,9 @@ exports.CheckIfSlotAvailable = async (
     );
 
     console.log("Meeting Created:");
-    console.log("Start URL:", meetingResponse.data.start_url);
+    // console.log("Start URL:", meetingResponse.data.start_url);
     console.log("Join URL:", meetingResponse.data.join_url);
-    console.log("Registration URL:", meetingResponse.data.registration_url);
+    // console.log("Registration URL:", meetingResponse.data.registration_url);
 
     return {
       data: meetingResponse.data,

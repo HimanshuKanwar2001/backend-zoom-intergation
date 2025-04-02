@@ -4,7 +4,8 @@ const User = require("../models/User");
 exports.refreshAccessToken = async (userId) => {
   try {
     const user = await User.findById(userId);
-    console.log("USER------->", user.name);
+    console.log(" refresh Token  user", user);
+    // console.log("USER------->", user.name);
     if (!user) throw new Error("❌ User not found in database");
 
     const {
@@ -14,17 +15,17 @@ exports.refreshAccessToken = async (userId) => {
       zoomClientID,
       zoomClientSecret,
     } = user;
-    console.log(`refreshToken ${refreshToken},
-      tokenExpiresAt ${tokenExpiresAt},
-      zoomId ${zoomId},
-      zoomClientID ${zoomClientID},
-      zoomClientSecret ${zoomClientSecret},
-        `);
+    // console.log(`refreshToken ${refreshToken},
+    //   tokenExpiresAt ${tokenExpiresAt},
+    //   zoomId ${zoomId},
+    //   zoomClientID ${zoomClientID},
+    //   zoomClientSecret ${zoomClientSecret},
+    //     `);
     if (!refreshToken)
       throw new Error("❌ No refresh token available for user");
 
     if (new Date() < tokenExpiresAt) {
-      console.log("✅ Access token is still valid. No refresh needed.");
+      // console.log("✅ Access token is still valid. No refresh needed.");
       return user.accessToken;
     }
 

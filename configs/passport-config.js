@@ -4,10 +4,10 @@ const User = require("../models/User.js"); // Import user model if needed
 
 // Function to dynamically configure Zoom strategy
 const configureZoomStrategy = (clientID, clientSecret, selectedAccount) => {
-  console.log("Configuring Zoom Strategy with:", { clientID, clientSecret });
+  // console.log("Configuring Zoom Strategy with:", { clientID, clientSecret });
 
   if (!clientID || !clientSecret) {
-    console.error("❌ Missing Zoom credentials!");
+    // console.error("❌ Missing Zoom credentials!");
     throw new Error("Invalid Zoom account selection");
   }
 
@@ -23,7 +23,7 @@ const configureZoomStrategy = (clientID, clientSecret, selectedAccount) => {
         clientID,
         clientSecret,
         callbackURL: "http://localhost:5000/auth/zoom/callback",
-        passReqToCallback: true, // Pass req to callback
+        passReqToCallback: true, 
       },
       async (req, accessToken, refreshToken, profile, done) => {
         try {
@@ -31,7 +31,7 @@ const configureZoomStrategy = (clientID, clientSecret, selectedAccount) => {
 
           // Simulate user retrieval or creation in DB
           let user = await User.findOne({ zoomId: profile.id });
-          console.log("USER IN PASSPORT JS ", user);
+          // console.log("USER IN PASSPORT JS ", user);
           if (!user) {
             user = await User.create({
               zoomId: profile.id,

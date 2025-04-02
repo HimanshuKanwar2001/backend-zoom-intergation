@@ -15,7 +15,7 @@ exports.getUpcomingMeeting = async (email, type = "upcoming", user) => {
     }
 
     // Generate a new access token
-    console.log("user._id--->", user._id);
+    // console.log("user._id--->", user._id);
     const accessToken = await refreshAccessToken(user._id);
     console.log("🔑 Using access token:", accessToken.slice(0, 15), "...");
 
@@ -34,6 +34,9 @@ exports.getUpcomingMeeting = async (email, type = "upcoming", user) => {
       }
     );
     console.log(`📅 Fetched ${response.data.meetings.length} meetings`);
+    // console.log(
+    //   `📅 Fetched ${JSON.stringify(response.data.meetings)} meetings`
+    // );
     return response?.data.meetings || [];
   } catch (error) {
     console.error(

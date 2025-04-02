@@ -37,11 +37,11 @@ exports.createMeeting = async (req, res) => {
     // Format the date in Zoom's required format (ISO string without milliseconds)
     const isoDateTime = utcDate.toISOString().slice(0, 19) + "Z";
 
-    console.log(isoDateTime); // Output: "2024-03-25T04:30:00Z"
+    // console.log(isoDateTime); // Output: "2024-03-25T04:30:00Z"
 
-    console.log("Corrected ISO DateTime for Zoom:", isoDateTime);
+    // console.log("Corrected ISO DateTime for Zoom:", isoDateTime);
 
-    console.log("ISODATETIME------>", isoDateTime);
+    // console.log("ISODATETIME------>", isoDateTime);
     // Validate user
     const user = await User.find();
     if (!user) return res.status(401).json({ error: "User not authenticated" });
@@ -63,11 +63,11 @@ exports.createMeeting = async (req, res) => {
       recurr_weekly_days,
       user
     );
-    console.log("isMeetCreated", isMeetCreated);
-    console.log(
-      "isMeetCreated.selectZoomAccount------>",
-      isMeetCreated.selectedAccount.toUpperCase()
-    );
+    // console.log("isMeetCreated", isMeetCreated);
+    // console.log(
+    //   "isMeetCreated.selectZoomAccount------>",
+    //   isMeetCreated.selectedAccount.toUpperCase()
+    // );
 
     const hostKey = keys[isMeetCreated.selectedAccount.toUpperCase()];
     console.log("HOST KEY--------------->", hostKey.hostKey);
@@ -170,5 +170,38 @@ exports.searchMeetings = async (req, res) => {
       error.response?.data || error.message
     );
     res.status(500).json({ message: "Failed to search meetings" });
+  }
+};
+
+exports.deleteMeeting = async (req, res) => {
+  try {
+    const { id, host_id } = req.body;
+    console.log("id", id, "HostID ", host_id);
+    const account = await User.findOne({ zoomId: host_id });
+    // console.log("account", account._id);
+    const accessToken = await refreshAccessToken(account._id);
+    if (!accessToken) {
+      console.warn(`⚠️ accessToken not valid`);
+    }
+
+    if (!accessToken) {
+      return res.status(401).json({ message: "Unauthorized: No access token" });
+    }
+
+    const options = {
+      method: "DELETE",
+      url: `https://api.zoom.us/v2/meetings/${id}`,
+      headers: { Authorization: `Bearer ${accessToken}` },
+    };
+
+    await axios.request(options);
+
+    res.status(200).json({ message: "Meeting deleted successfully" });
+  } catch (error) {
+    console.error("Error in deleteMeeting Controller:", error);
+    res.status(500).json({
+      message: "Internal Server Error",
+      error: error.response?.data || error.message,
+    });
   }
 };

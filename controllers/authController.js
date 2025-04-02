@@ -22,9 +22,9 @@ exports.refreshZoomToken = async (req, res) => {
       return res.status(400).json({ error: "No refresh token found" });
     }
 
-    console.log(`Refreshing token for user: ${user.email}`);
+    // console.log(`Refreshing token for user: ${user.email}`);
     const accKey = keys[user.selectedName];
-    console.log("ACCOUNTKEY", accKey);
+    // console.log("ACCOUNTKEY", accKey);
     // console.log("USER------------>", user);
 
     // Ensure no concurrent refresh attempts for the same user
@@ -93,7 +93,7 @@ exports.refreshZoomToken = async (req, res) => {
 
 // ✅ Function to fetch upcoming meetings
 exports.getUpcomingMeetings = async (req, res) => {
-  console.log("INSIDE GET UPCOMING MEETINGS");
+  // console.log("INSIDE GET UPCOMING MEETINGS");
   try {
     const axios = require("axios").default;
 
@@ -170,11 +170,11 @@ exports.selectZoomAccount = async (req, res, next) => {
         .status(400)
         .json({ message: "Invalid Zoom account selection" });
 
-    console.log(
-      "selectedAccount.clientID, selectedAccount.clientSecret-------->",
-      selectedAccount.clientID,
-      selectedAccount.clientSecret
-    );
+    // console.log(
+    //   "selectedAccount.clientID, selectedAccount.clientSecret-------->",
+    //   selectedAccount.clientID,
+    //   selectedAccount.clientSecret
+    // );
     // Apply the strategy dynamically before authentication
     configureZoomStrategy(
       selectedAccount.clientID,
@@ -216,10 +216,10 @@ exports.authZoom = async (req, res, next) => {
     const { clientID, clientSecret } = keys[account];
     configureZoomStrategy(clientID, clientSecret);
 
-    console.log(`🚀 Initiating Zoom OAuth for ${account}`);
+    // console.log(`🚀 Initiating Zoom OAuth for ${account}`);
     passport.authenticate("zoom")(req, res, next);
   } catch (error) {
-    console.error("❌ Authentication Setup Error:", error);
+    // console.error("❌ Authentication Setup Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -229,7 +229,7 @@ exports.authZoomCallback = (req, res) => {
   passport.authenticate("zoom", {
     failureRedirect: "/auth/zoom/retry",
   })(req, res, () => {
-    console.log("✅ User authenticated, redirecting...", req.user.name);
+    // console.log("✅ User authenticated, redirecting...", req.user.name);
     res.json({
       message: `user got authneticated ${JSON.stringify(
         req.user.zoomClientID,

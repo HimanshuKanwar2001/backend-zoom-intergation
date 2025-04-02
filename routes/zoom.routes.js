@@ -10,4 +10,5 @@ const passport = require("../configs/passport-config.js");
 route.post("/create/meeting", zoomController.createMeeting);
 route.get("/upcoming/meeting", zoomController.getUpcomingMeetings);
 route.post("/search", zoomController.searchMeetings);
+route.delete("/delete/meeting",zoomController.deleteMeeting);
 module.exports = route;
