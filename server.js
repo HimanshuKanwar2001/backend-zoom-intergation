@@ -32,7 +32,6 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error("MongoDB Error:", err));
 
-
 app.use(cors());
 
 app.use("/auth/zoom", authRoutes);
