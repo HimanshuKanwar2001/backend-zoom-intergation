@@ -87,7 +87,7 @@ exports.createMeeting = async (req, res) => {
 
 exports.getUpcomingMeetings = async (req, res) => {
   try {
-    console.log("📌 Inside getUpcomingMeetings");
+    // console.log("📌 Inside getUpcomingMeetings");
 
     // ✅ Extract email & type from query (dynamic usage)
     const { type = "upcoming" } = req.body;

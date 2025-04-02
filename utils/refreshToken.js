@@ -4,7 +4,7 @@ const User = require("../models/User");
 exports.refreshAccessToken = async (userId) => {
   try {
     const user = await User.findById(userId);
-    console.log(" refresh Token  user", user);
+    // console.log(" refresh Token  user", user);
     // console.log("USER------->", user.name);
     if (!user) throw new Error("❌ User not found in database");
 

@@ -7,7 +7,7 @@ const User = require("../models/User.js");
 // Function to fetch upcoming meetings
 exports.getUpcomingMeeting = async (email, type = "upcoming", user) => {
   try {
-    console.log("📌 Inside getUpcomingMeetings FUNCTION");
+    // console.log("📌 Inside getUpcomingMeetings FUNCTION");
 
     // Validate user
     if (!user) {
@@ -17,7 +17,7 @@ exports.getUpcomingMeeting = async (email, type = "upcoming", user) => {
     // Generate a new access token
     // console.log("user._id--->", user._id);
     const accessToken = await refreshAccessToken(user._id);
-    console.log("🔑 Using access token:", accessToken.slice(0, 15), "...");
+    // console.log("🔑 Using access token:", accessToken.slice(0, 15), "...");
 
     if (!accessToken) {
       throw new Error(
@@ -33,7 +33,7 @@ exports.getUpcomingMeeting = async (email, type = "upcoming", user) => {
         params: { type },
       }
     );
-    console.log(`📅 Fetched ${response.data.meetings.length} meetings`);
+    // console.log(`📅 Fetched ${response.data.meetings.length} meetings`);
     // console.log(
     //   `📅 Fetched ${JSON.stringify(response.data.meetings)} meetings`
     // );
@@ -50,7 +50,7 @@ exports.getUpcomingMeeting = async (email, type = "upcoming", user) => {
 // Express route handler to get upcoming meetings
 exports.getUpcomingMeetingsHandler = async (req, res) => {
   try {
-    console.log("📌 Inside getUpcomingMeetingsHandler");
+    // console.log("📌 Inside getUpcomingMeetingsHandler");
 
     // Extract email and type from request body
     const { email, type = "upcoming" } = req.body;
