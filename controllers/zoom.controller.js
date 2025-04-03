@@ -98,13 +98,21 @@ exports.getUpcomingMeetings = async (req, res) => {
 
     if (!users.length) return res.status(401).json({ error: "No users found" });
 
-    const meetingsMap = [];
-
-    for (const user of users) {
-      const meetings = await getUpcomingMeeting(user.email, type, user); // ✅ Fixed function name
-      // console.log("Users--->", meetings);
-      meetingsMap.push({ userName: user.name, meetings });
-    }
+    // ✅ Use Promise.all to fetch meetings for all users in parallel
+    const meetingsMap = await Promise.all(
+      users.map(async (user) => {
+        try {
+          const meetings = await getUpcomingMeeting(user.email, type, user);
+          return { userName: user.name, meetings };
+        } catch (error) {
+          console.error(
+            `❌ Error fetching meetings for ${user.email}:`,
+            error.message
+          );
+          return { userName: user.name, error: "Failed to fetch meetings" };
+        }
+      })
+    );
 
     // console.log("📅 Fetched meetings:", meetingsMap);
     res.json(meetingsMap);
