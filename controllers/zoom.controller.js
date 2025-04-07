@@ -18,13 +18,17 @@ exports.createMeeting = async (req, res) => {
       allow_multiple_devices,
       audio,
       waiting_room,
-      recurr_end_date_time,
-      recurr_end_times,
-      recurr_monthly_day,
-      recurr_monthly_week,
-      recurr_monthly_week_day,
-      recurr_repeat_interval,
-      recurr_weekly_days,
+      recurrenceType,
+      repeatEvery,
+      end_date_time,
+      end_times,
+      monthly_day,
+      monthly_week,
+      monthly_week_day,
+      repeat_interval,
+      type,
+      weekly_days,
+      endDate,
     } = req.body;
     const duration = Number(durationHour * 60) + Number(durationMinute);
     // console.log("DURANTION-------------->", duration);
@@ -54,13 +58,17 @@ exports.createMeeting = async (req, res) => {
       allow_multiple_devices,
       audio,
       waiting_room,
-      recurr_end_date_time,
-      recurr_end_times,
-      recurr_monthly_day,
-      recurr_monthly_week,
-      recurr_monthly_week_day,
-      recurr_repeat_interval,
-      recurr_weekly_days,
+      recurrenceType,
+      repeatEvery,
+      end_date_time,
+      end_times,
+      monthly_day,
+      monthly_week,
+      monthly_week_day,
+      repeat_interval,
+      type,
+      weekly_days,
+      endDate,
       user
     );
     // console.log("isMeetCreated", isMeetCreated);
@@ -188,6 +196,7 @@ exports.deleteMeeting = async (req, res) => {
     const account = await User.findOne({ zoomId: host_id });
     // console.log("account", account._id);
     const accessToken = await refreshAccessToken(account._id);
+    // console.log("ACCESSTOKEN", accessToken);
     if (!accessToken) {
       console.warn(`⚠️ accessToken not valid`);
     }
@@ -199,14 +208,17 @@ exports.deleteMeeting = async (req, res) => {
     const options = {
       method: "DELETE",
       url: `https://api.zoom.us/v2/meetings/${id}`,
-      headers: { Authorization: `Bearer ${accessToken}` },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
     };
 
     await axios.request(options);
 
     res.status(200).json({ message: "Meeting deleted successfully" });
   } catch (error) {
-    console.error("Error in deleteMeeting Controller:", error);
+    console.error("Error in deleteMeeting Controller:", error.message);
     res.status(500).json({
       message: "Internal Server Error",
       error: error.response?.data || error.message,
