@@ -11,6 +11,7 @@ const sendMeetingEmail = require("./utils/sendEmail.js");
 const authRoutes = require("./routes/router.js");
 const zoomRoutes = require("./routes/zoom.routes.js");
 const authRoute = require("./routes/authRoute.js");
+const zoomFeatureRoute = require("./routes/zoomFeatureRoute.js");
 const keys = require("./configs/secret_keys.js");
 require("dotenv").config();
 
@@ -39,6 +40,7 @@ app.use("/auth/zoom", authRoutes);
 app.use("/api/zoom", zoomRoutes);
 
 app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/feature", zoomFeatureRoute);
 
 // Logout
 app.get("/logout", (req, res) => {
