@@ -10,6 +10,7 @@ const cron = require("node-cron");
 const sendMeetingEmail = require("./utils/sendEmail.js");
 const authRoutes = require("./routes/router.js");
 const zoomRoutes = require("./routes/zoom.routes.js");
+const authRoute = require("./routes/authRoute.js");
 const keys = require("./configs/secret_keys.js");
 require("dotenv").config();
 
@@ -36,6 +37,8 @@ app.use(cors());
 
 app.use("/auth/zoom", authRoutes);
 app.use("/api/zoom", zoomRoutes);
+
+app.use("/api/v1/auth", authRoute);
 
 // Logout
 app.get("/logout", (req, res) => {
