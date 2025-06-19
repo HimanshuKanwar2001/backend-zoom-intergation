@@ -1,30 +1,8 @@
 const axios = require("axios");
-const {
-  getUpcomingMeetinggg,
-  getUpcomingMeeting,
-} = require("./getUpcomingMeeting");
+const { getUpcomingAllMeetings } = require("./getUpcomingMeeting");
 const { refreshAccessToken } = require("./refreshToken");
 
-exports.CheckIfSlotAvailable = async (
-  topic,
-  isoDateTime,
-  duration,
-  allow_multiple_devices,
-  audio,
-  waiting_room,
-  recurrenceType,
-  repeatEvery,
-  end_date_time,
-  end_times,
-  monthly_day,
-  monthly_week,
-  monthly_week_day,
-  repeat_interval,
-  type,
-  weekly_days,
-  endDate,
-  users
-) => {
+exports.CheckIfSlotAvailable = async (meetingDetails, users) => {
   try {
     // console.log("INSIDE CHECKIF SLOT AVAILABLE", isoDateTime);
 
@@ -37,7 +15,7 @@ exports.CheckIfSlotAvailable = async (
     // Loop through all linked Zoom accounts
     for (const user of users) {
       const type = "upcoming";
-      const userUpcomingMeetings = await getUpcomingMeeting(
+      const userUpcomingMeetings = await getUpcomingAllMeetings(
         user.email,
         type,
         user
@@ -52,9 +30,9 @@ exports.CheckIfSlotAvailable = async (
           "meeting.start_time-----",
           meeting.start_time,
           "isoDateTime------",
-          isoDateTime
+          meetingDetails.isoDateTime
         );
-        return meeting.start_time === isoDateTime;
+        return meeting.start_time === meetingDetails.isoDateTime;
       });
 
       console.log(`isSlotTaken for ${user.email} --->`, isSlotTaken);
@@ -71,32 +49,32 @@ exports.CheckIfSlotAvailable = async (
     }
 
     // Refresh access token for the available account
-    const accessToken = await refreshAccessToken(availableAccount._id);
+    const accessToken = await refreshAccessToken(availableAccount);
 
     // Create the Zoom meeting with the available account
     const meetingResponse = await axios.post(
       `https://api.zoom.us/v2/users/${availableAccount.email}/meetings`,
       {
-        topic: topic || "New Meeting",
+        topic: meetingDetails.topic || "New Meeting",
         type: 2, // Scheduled Meeting
-        start_time: isoDateTime,
-        duration: duration,
+        start_time: meetingDetails.isoDateTime,
+        duration: meetingDetails.duration,
         timezone: "Asia/Kolkata",
         password: "123456",
-        allow_multiple_devices: allow_multiple_devices,
+        allow_multiple_devices: meetingDetails.allow_multiple_devices,
         audio: "both",
-        waiting_room: waiting_room,
+        waiting_room: meetingDetails.waiting_room,
         host_video: true,
         recurrence: {
-          end_date_time: end_date_time,
-          end_times: end_times,
-          monthly_day: monthly_day,
-          monthly_week: monthly_week,
-          monthly_week_day: monthly_week_day,
-          repeat_interval: repeat_interval,
-          type: type ? type : 1,
-          weekly_days: weekly_days,
-          endDate: endDate,
+          end_date_time: meetingDetails.end_date_time,
+          end_times: meetingDetails.end_times,
+          monthly_day: meetingDetails.monthly_day,
+          monthly_week: meetingDetails.monthly_week,
+          monthly_week_day: meetingDetails.monthly_week_day,
+          repeat_interval: meetingDetails.repeat_interval,
+          type: meetingDetails.type ? meetingDetails.type : 1,
+          weekly_days: meetingDetails.weekly_days,
+          endDate: meetingDetails.endDate,
           settings: {
             approval_type: 1,
             registration_type: 2,
