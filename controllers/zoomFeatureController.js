@@ -1,5 +1,6 @@
 const UserV2 = require("../models/UserV2");
 const { CheckIfSlotAvailable } = require("../utils/checkForAvalableTime");
+const keys=require("../configs/secret_keys.js");
 
 exports.createMeets = async (req, res) => {
   try {
@@ -32,6 +33,7 @@ exports.createMeets = async (req, res) => {
 
     const meetingDetails = {
       topic,
+      isoDateTime,
       start_time: isoDateTime,
       duration,
       allow_multiple_devices,
@@ -51,7 +53,8 @@ exports.createMeets = async (req, res) => {
     };
     const users = await UserV2.find();
 
-    const CreatedMeet = CheckIfSlotAvailable(meetingDetails, users);
+    const isMeetCreated = await CheckIfSlotAvailable(meetingDetails, users);
+    console.log("isMeetCreated", isMeetCreated);
     const hostKey = keys[isMeetCreated.selectedAccount.toUpperCase()];
     console.log("HOST KEY--------------->", hostKey.hostKey);
 

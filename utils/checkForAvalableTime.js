@@ -30,7 +30,7 @@ exports.CheckIfSlotAvailable = async (meetingDetails, users) => {
           "meeting.start_time-----",
           meeting.start_time,
           "isoDateTime------",
-          meetingDetails.isoDateTime
+          meetingDetails.start_time
         );
         return meeting.start_time === meetingDetails.isoDateTime;
       });
@@ -57,7 +57,7 @@ exports.CheckIfSlotAvailable = async (meetingDetails, users) => {
       {
         topic: meetingDetails.topic || "New Meeting",
         type: 2, // Scheduled Meeting
-        start_time: meetingDetails.isoDateTime,
+        start_time: meetingDetails.start_time,
         duration: meetingDetails.duration,
         timezone: "Asia/Kolkata",
         password: "123456",

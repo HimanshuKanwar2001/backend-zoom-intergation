@@ -1,7 +1,7 @@
 const axios = require("axios");
 const User = require("../models/User.js");
 
-const { getUpcomingMeeting } = require("../utils/getUpcomingMeeting.js");
+const { getUpcomingAllMeetings } = require("../utils/getUpcomingMeeting.js");
 const keys = require("../configs/secret_keys.js");
 const { refreshZoomToken, selectZoomAccount } = require("./authController.js");
 const { CheckIfSlotAvailable } = require("../utils/checkForAvalableTime.js");
@@ -110,7 +110,7 @@ exports.getUpcomingMeetings = async (req, res) => {
     const meetingsMap = await Promise.all(
       users.map(async (user) => {
         try {
-          const meetings = await getUpcomingMeeting(user.email, type, user);
+          const meetings = await getUpcomingAllMeetings(user.email, type, user);
           return { userName: user.name, meetings };
         } catch (error) {
           console.error(

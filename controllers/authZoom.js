@@ -24,15 +24,9 @@ exports.authZoomAccountV2 = (req, res) => {
   //   const redirectUri = encodeURIComponent(
   //     "http://localhost:5000/api/v1/auth/zoom/callback"
   //   );
-  //   const state = encodeURIComponent(`${account}`);
+  const state = encodeURIComponent(`${account}`);
 
-  const zoomAuthURL = `https://zoom.us/oauth/authorize?response_type=code&client_id=${
-    creds.clientID
-  }&redirect_uri=${redirectUri}&state=${encodeURIComponent(account)}`;
-
-  //https://zoom.us/oauth/authorize?response_type=code&client_id=Dh5FclhmRgqjrQWvXypcA&redirect_uri=http://localhost:5000/auth/zoom/callback
-
-  //   https://zoom.us/oauth/authorize?response_type=code&client_id=Dh5FclhmRgqjrQWvXypcA&redirect_uri=http://localhost:5000/auth/zoom/callback
+  const zoomAuthURL = `https://zoom.us/oauth/authorize?response_type=code&client_id=${creds.clientID}&redirect_uri=${redirectUri}&state=${state}`;
 
   res.redirect(zoomAuthURL);
 };
@@ -48,7 +42,7 @@ exports.authZoomCallbackV2 = async (req, res) => {
       .json({ message: "Missing authorization code and state" });
   }
 
-  const urldata = decodeURIComponent(code);
+  // const urldata = decodeURIComponent(code);
   //   console.log("urldata", urldata);
   //   console.log("account", account, email);
   const creds = keys[state.toUpperCase()];
