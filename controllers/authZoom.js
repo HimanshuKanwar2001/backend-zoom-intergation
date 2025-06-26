@@ -1,17 +1,18 @@
 const { default: axios } = require("axios");
-const keys = require("../configs/secret_keys");
+const keys = require("../configs/secret_keys.js");
 const dotenv = require("dotenv");
-const UserV2 = require("../models/UserV2");
+const UserV2 = require("../models/UserV2.js");
 dotenv.config();
 
 exports.authZoomAccountV2 = (req, res) => {
   const { account } = req.query;
+  console.log("account name is here", account.toUpperCase());
 
   if (!account) {
     return res.status(400).json({ message: "Missing Zoom account " });
   }
-
-  const creds = keys[account.toUpperCase()];
+  console.log("dadadadad", keys["ANKIT"]);
+  const creds = keys[`${account.toUpperCase()}`];
   console.log(creds);
   if (!creds) {
     return res.status(400).json({ message: "Invalid Zoom account" });
@@ -82,10 +83,12 @@ exports.authZoomCallbackV2 = async (req, res) => {
     const zoomUser = await axios.get("https://api.zoom.us/v2/users/me", {
       headers: { Authorization: `Bearer ${access_token}` },
     });
-    console.log("zoomUser", zoomUser);
+    // console.log("zoomUser", zoomUser);
     const { id, email: zoomEmail, first_name, last_name } = zoomUser.data;
+    console.log(id + " " + zoomEmail + " " + first_name + " " + last_name);
     // 3. Store or update user in DB
     let user = await UserV2.findOne({ zoomId: id });
+    console.log("user------------------", user);
     if (!user) {
       user = await UserV2.create({
         zoomId: id,
@@ -104,7 +107,7 @@ exports.authZoomCallbackV2 = async (req, res) => {
       user.tokenExpiresAt = new Date(Date.now() + 3600 * 1000);
       user.zoomClientID = creds.clientID;
       user.zoomClientSecret = creds.clientSecret;
-      user.selectedName = account.toUpperCase();
+      user.selectedName = state.toUpperCase();
       await user.save();
     }
     return res.status(200).json({

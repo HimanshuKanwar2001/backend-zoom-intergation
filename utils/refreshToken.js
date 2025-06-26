@@ -14,7 +14,7 @@ exports.refreshAccessToken = async (user) => {
       throw new Error("❌ Missing Zoom Client ID or Secret in database");
     }
 
-    console.log(`🔄 Refreshing Zoom token for user: ${user._id}`);
+    // console.log(`🔄 Refreshing Zoom token for user: ${user._id}`);
 
     const response = await axios.post(
       "https://zoom.us/oauth/token",

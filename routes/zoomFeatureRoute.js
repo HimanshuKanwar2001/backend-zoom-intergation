@@ -6,6 +6,6 @@ const router = express.Router();
 router.post("/create",createMeets);
 router.get("/upcoming",upcomingMeetings);
 router.post("/search",searchMeeting);
-router.post("/delete",deleteMeeting);
+router.delete("/delete",deleteMeeting);
 
 module.exports = router;

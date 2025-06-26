@@ -5,29 +5,63 @@ const { refreshAccessToken } = require("./refreshToken.js");
 const User = require("../models/User.js");
 
 // Function to fetch upcoming meetings
-exports.getUpcomingAllMeetings = async (email, meetingType = "upcoming", user) => {
+
+exports.getUpcomingAllMeetings = async (
+  email,
+  meetingType = "upcoming",
+  user
+) => {
   try {
-    // Validate user
     if (!user) {
       throw new Error("User not authenticated");
     }
 
-    // Generate a new access token
     const accessToken = await refreshAccessToken(user);
-
     if (!accessToken) {
-      throw new Error(
-        "Reauthorization required. Please reconnect your Zoom account."
-      );
+      throw new Error("Reauthorization required.");
     }
 
-    // Fetch upcoming meetings from Zoom API
-    const response = await axios.get(
+    const { data } = await axios.get(
       `https://api.zoom.us/v2/users/me/meetings?type=${meetingType}`,
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
 
-    return response?.data.meetings || [];
+    const baseMeetings = data?.meetings || [];
+
+    // Step 1: Get meeting details for recurring meetings (type === 8)
+    const enrichedMeetings = await Promise.all(
+      baseMeetings.map(async (meeting) => {
+        if (meeting.type === 8) {
+          try {
+            const { data: details } = await axios.get(
+              `https://api.zoom.us/v2/meetings/${meeting.id}`,
+              { headers: { Authorization: `Bearer ${accessToken}` } }
+            );
+
+            const match = details.occurrences?.find(
+              (occ) =>
+                new Date(occ.start_time).toISOString() ===
+                new Date(meeting.start_time).toISOString()
+            );
+
+            return {
+              ...meeting,
+              occurrence_id: match?.occurrence_id || null,
+            };
+          } catch (err) {
+            console.warn(
+              `❌ Could not fetch details for meeting ${meeting.id}`
+            );
+            return { ...meeting, occurrence_id: null };
+          }
+        } else {
+          return { ...meeting, occurrence_id: null };
+        }
+      })
+    );
+
+    // console.log(enrichedMeetings);
+    return enrichedMeetings;
   } catch (error) {
     throw new Error(
       `Error fetching meetings: ${error.response?.data || error.message}`
