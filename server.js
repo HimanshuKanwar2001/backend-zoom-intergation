@@ -7,6 +7,7 @@ const axios = require("axios");
 // const refreshAccessToken = require("./utils/refreshToken.js");
 const User = require("./models/User.js");
 const cron = require("node-cron");
+const db = require("./configs/db.js");
 const MongoStore = require("connect-mongo");
 const sendMeetingEmail = require("./utils/sendEmail.js");
 const authRoutes = require("./routes/router.js");
@@ -21,15 +22,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use(
-//   session({
-//     secret: "your_secret_key",
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: { secure: true }, // Set `true` if using HTTPS
-//   })
-// );
-
 app.use(
   session({
     secret: "your_secret_key",
@@ -38,19 +30,24 @@ app.use(
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URI,
       collectionName: "sessions",
-    }),
+    }
+  ),
     cookie: {
       maxAge: 1000 * 60 * 60 * 24, // 1 day
       httpOnly: true,
-      secure: true, // true if using HTTPS
+      secure: false, // true if using HTTPS
     },
   })
 );
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.error("MongoDB Error:", err));
+// app.use(
+//   session({
+//     secret: "your_secret_key",
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: { secure: true }, // Set `true` if using HTTPS
+//   })
+// );
 
 app.use(cors());
 
@@ -66,6 +63,7 @@ app.get("/logout", (req, res) => {
 });
 
 // Start Server
-app.listen(5000, () => {
+app.listen(5000, async () => {
+  await db.connectToDB();
   console.log("Server running on http://localhost:5000");
 });
