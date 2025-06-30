@@ -7,7 +7,7 @@ const axios = require("axios");
 // const refreshAccessToken = require("./utils/refreshToken.js");
 const User = require("./models/User.js");
 const cron = require("node-cron");
-const MongoStore = require('connect-mongo');
+const MongoStore = require("connect-mongo");
 const sendMeetingEmail = require("./utils/sendEmail.js");
 const authRoutes = require("./routes/router.js");
 const zoomRoutes = require("./routes/zoom.routes.js");
@@ -30,22 +30,22 @@ app.use(express.urlencoded({ extended: true }));
 //   })
 // );
 
-
 app.use(
   session({
-    secret: 'your_secret_key',
+    secret: "your_secret_key",
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URI,
-      collectionName: 'sessions',
+      collectionName: "sessions",
     }),
     cookie: {
       maxAge: 1000 * 60 * 60 * 24, // 1 day
+      httpOnly: true,
+      secure: true, // true if using HTTPS
     },
   })
 );
-
 
 mongoose
   .connect(process.env.MONGO_URI)
