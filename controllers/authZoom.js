@@ -104,6 +104,7 @@ exports.authZoomCallbackV2 = async (req, res) => {
         zoomClientSecret: creds.clientSecret,
       });
     } else {
+      user.name = `${first_name} ${last_name}`;
       user.accessToken = access_token;
       user.refreshToken = refresh_token;
       user.tokenExpiresAt = new Date(Date.now() + 3600 * 1000);

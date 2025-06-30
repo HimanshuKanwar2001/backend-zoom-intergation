@@ -23,7 +23,7 @@ const configureZoomStrategy = (clientID, clientSecret, selectedAccount) => {
         clientID,
         clientSecret,
         callbackURL: "http://localhost:5000/auth/zoom/callback",
-        passReqToCallback: true, 
+        passReqToCallback: true,
       },
       async (req, accessToken, refreshToken, profile, done) => {
         try {
