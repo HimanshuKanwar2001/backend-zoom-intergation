@@ -25,7 +25,7 @@ app.use(
     secret: "your_secret_key",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }, // Set `true` if using HTTPS
+    cookie: { secure: true }, // Set `true` if using HTTPS
   })
 );
 
