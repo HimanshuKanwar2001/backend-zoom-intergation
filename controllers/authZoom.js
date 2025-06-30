@@ -11,7 +11,7 @@ exports.authZoomAccountV2 = (req, res) => {
   if (!account) {
     return res.status(400).json({ message: "Missing Zoom account " });
   }
-  console.log("dadadadad", keys["ANKIT"]);
+  console.log("dadadadad", keys[account.toUpperCase()]);
   const creds = keys[`${account.toUpperCase()}`];
   console.log(creds);
   if (!creds) {
@@ -30,6 +30,8 @@ exports.authZoomAccountV2 = (req, res) => {
   const zoomAuthURL = `https://zoom.us/oauth/authorize?response_type=code&client_id=${creds.clientID}&redirect_uri=${redirectUri}&state=${state}`;
 
   res.redirect(zoomAuthURL);
+
+  // res.status(200).json({ message: "Zoom account selected", zoomAuthURL });
 };
 
 exports.authZoomCallbackV2 = async (req, res) => {
