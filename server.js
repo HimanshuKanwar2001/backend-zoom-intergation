@@ -20,14 +20,31 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// app.use(
+//   session({
+//     secret: "your_secret_key",
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: { secure: true }, // Set `true` if using HTTPS
+//   })
+// );
+
+
 app.use(
   session({
-    secret: "your_secret_key",
+    secret: 'your_secret_key',
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true }, // Set `true` if using HTTPS
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+      collectionName: 'sessions',
+    }),
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+    },
   })
 );
+
 
 mongoose
   .connect(process.env.MONGO_URI)
